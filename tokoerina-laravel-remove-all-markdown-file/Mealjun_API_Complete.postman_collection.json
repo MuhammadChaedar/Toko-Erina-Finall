@@ -1,0 +1,616 @@
+{
+  "info": {
+    "_postman_id": "mealjun-api-2026",
+    "name": "Mealjun API - Complete Collection",
+    "description": "REST API Lengkap untuk Sistem Manajemen Produk, Testimonial, Gallery, dan Konten Mealjun dengan WhatsApp Integration. Total 59 Endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27017582"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"email\": \"admin@mealjun.com\",\n    \"password\": \"password123\"\n}"},
+            "url": {"raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"]},
+            "description": "Login dengan email dan password untuk mendapatkan API token"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/auth/logout", "host": ["{{base_url}}"], "path": ["api", "auth", "logout"]},
+            "description": "Logout dan invalidate token yang sedang digunakan"
+          }
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/auth/me", "host": ["{{base_url}}"], "path": ["api", "auth", "me"]},
+            "description": "Dapatkan data user yang sedang login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Products - Public",
+      "item": [
+        {
+          "name": "List All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/products?page=1", "host": ["{{base_url}}"], "path": ["api", "public", "products"], "query": [{"key": "page", "value": "1"}, {"key": "flavor", "value": "", "disabled": true}]},
+            "description": "List semua produk yang tersedia (public, paginated 12 per page)"
+          }
+        },
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/products/product-id-uuid", "host": ["{{base_url}}"], "path": ["api", "public", "products", "product-id-uuid"]},
+            "description": "Dapatkan detail produk dan increment view count"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Products - Admin",
+      "item": [
+        {
+          "name": "List All Products (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/products?page=1", "host": ["{{base_url}}"], "path": ["api", "products"], "query": [{"key": "page", "value": "1"}, {"key": "stock_status", "value": "", "disabled": true}]},
+            "description": "List semua produk dengan creator info (admin only)"
+          }
+        },
+        {
+          "name": "Get Product Detail (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/products/product-id-uuid", "host": ["{{base_url}}"], "path": ["api", "products", "product-id-uuid"]},
+            "description": "Dapatkan detail produk dengan creator info (admin)"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Keripik Tempe Goreng", "type": "text"},
+                {"key": "flavor", "value": "Original", "type": "text"},
+                {"key": "description", "value": "Keripik tempe dengan bumbu khas Mealjun", "type": "text"},
+                {"key": "price", "value": "25000", "type": "text"},
+                {"key": "image", "value": "{{image_file}}", "type": "file"},
+                {"key": "shopee_link", "value": "https://shopee.co.id/...", "type": "text"},
+                {"key": "tiktok_link", "value": "https://tiktok.com/@mealjun", "type": "text"},
+                {"key": "whatsapp_link", "value": "https://wa.me/6287700000001", "type": "text"},
+                {"key": "stock_status", "value": "available", "type": "text"},
+                {"key": "is_featured", "value": "true", "type": "text"}
+              ]
+            },
+            "url": {"raw": "{{base_url}}/api/products", "host": ["{{base_url}}"], "path": ["api", "products"]},
+            "description": "Buat produk baru dengan upload image file ke Cloudinary (multipart/form-data). Supports jpeg, png, webp, gif (max 5MB)"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Keripik Tempe Goreng Premium", "type": "text"},
+                {"key": "price", "value": "30000", "type": "text"},
+                {"key": "image", "value": "{{image_file}}", "type": "file", "disabled": true},
+                {"key": "stock_status", "value": "available", "type": "text"}
+              ]
+            },
+            "url": {"raw": "{{base_url}}/api/products/product-id-uuid", "host": ["{{base_url}}"], "path": ["api", "products", "product-id-uuid"]},
+            "description": "Update produk dengan form-data (semua field opsional). Enable 'image' field jika ingin upload file baru"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/products/product-id-uuid", "host": ["{{base_url}}"], "path": ["api", "products", "product-id-uuid"]},
+            "description": "Hapus produk"
+          }
+        },
+        {
+          "name": "Toggle Featured Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/products/product-id-uuid/toggle-featured", "host": ["{{base_url}}"], "path": ["api", "products", "product-id-uuid", "toggle-featured"]},
+            "description": "Toggle featured status produk"
+          }
+        },
+        {
+          "name": "Update Stock Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"stock_status\": \"available\"\n}"},
+            "url": {"raw": "{{base_url}}/api/products/product-id-uuid/stock-status", "host": ["{{base_url}}"], "path": ["api", "products", "product-id-uuid", "stock-status"]},
+            "description": "Update stock status (available, limited, out_of_stock)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ Testimonials - Public",
+      "item": [
+        {
+          "name": "List Approved Testimonials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/testimonials?page=1", "host": ["{{base_url}}"], "path": ["api", "public", "testimonials"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua testimonial yang sudah disetujui (public)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ Testimonials - Admin",
+      "item": [
+        {
+          "name": "List All Testimonials (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/testimonials?page=1", "host": ["{{base_url}}"], "path": ["api", "testimonials"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua testimonial (admin only)"
+          }
+        },
+        {
+          "name": "Get Testimonial Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/testimonials/testimonial-id-uuid", "host": ["{{base_url}}"], "path": ["api", "testimonials", "testimonial-id-uuid"]},
+            "description": "Dapatkan detail testimonial"
+          }
+        },
+        {
+          "name": "Create Testimonial",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"customer_name\": \"Budi Santoso\",\n    \"customer_image_base64\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABA...\",\n    \"rating\": 5,\n    \"review_text\": \"Produk Mealjun sangat berkualitas dan lezat! Recommended!\",\n    \"is_featured\": false,\n    \"is_approved\": false\n}"},
+            "url": {"raw": "{{base_url}}/api/testimonials", "host": ["{{base_url}}"], "path": ["api", "testimonials"]},
+            "description": "Buat testimonial baru"
+          }
+        },
+        {
+          "name": "Update Testimonial",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"customer_name\": \"Budi Santoso\",\n    \"rating\": 5,\n    \"review_text\": \"Produk Mealjun sangat berkualitas!\"\n}"},
+            "url": {"raw": "{{base_url}}/api/testimonials/testimonial-id-uuid", "host": ["{{base_url}}"], "path": ["api", "testimonials", "testimonial-id-uuid"]},
+            "description": "Update testimonial"
+          }
+        },
+        {
+          "name": "Delete Testimonial",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/testimonials/testimonial-id-uuid", "host": ["{{base_url}}"], "path": ["api", "testimonials", "testimonial-id-uuid"]},
+            "description": "Hapus testimonial"
+          }
+        },
+        {
+          "name": "Toggle Featured Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/testimonials/testimonial-id-uuid/toggle-featured", "host": ["{{base_url}}"], "path": ["api", "testimonials", "testimonial-id-uuid", "toggle-featured"]},
+            "description": "Toggle featured status testimonial"
+          }
+        },
+        {
+          "name": "Toggle Approved Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/testimonials/testimonial-id-uuid/toggle-approved", "host": ["{{base_url}}"], "path": ["api", "testimonials", "testimonial-id-uuid", "toggle-approved"]},
+            "description": "Toggle approved status testimonial"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🖼️ Gallery - Public",
+      "item": [
+        {
+          "name": "List Gallery Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/gallery?page=1", "host": ["{{base_url}}"], "path": ["api", "public", "gallery"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua gallery images terurut (public)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🖼️ Gallery - Admin",
+      "item": [
+        {
+          "name": "List Gallery Images (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/gallery?page=1", "host": ["{{base_url}}"], "path": ["api", "gallery"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua gallery images (admin only)"
+          }
+        },
+        {
+          "name": "Get Gallery Image Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/gallery/gallery-id-uuid", "host": ["{{base_url}}"], "path": ["api", "gallery", "gallery-id-uuid"]},
+            "description": "Dapatkan detail gallery image"
+          }
+        },
+        {
+          "name": "Create Gallery Image",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"title\": \"Produk Mealjun Terbaru\",\n    \"image_base64\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABA...\",\n    \"display_order\": 1,\n    \"description\": \"Galeri produk Mealjun terbaru 2026\"\n}"},
+            "url": {"raw": "{{base_url}}/api/gallery", "host": ["{{base_url}}"], "path": ["api", "gallery"]},
+            "description": "Buat gallery image baru"
+          }
+        },
+        {
+          "name": "Update Gallery Image",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"title\": \"Produk Updated\",\n    \"description\": \"Gallery updated\",\n    \"display_order\": 2\n}"},
+            "url": {"raw": "{{base_url}}/api/gallery/gallery-id-uuid", "host": ["{{base_url}}"], "path": ["api", "gallery", "gallery-id-uuid"]},
+            "description": "Update gallery image"
+          }
+        },
+        {
+          "name": "Delete Gallery Image",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/gallery/gallery-id-uuid", "host": ["{{base_url}}"], "path": ["api", "gallery", "gallery-id-uuid"]},
+            "description": "Hapus gallery image"
+          }
+        },
+        {
+          "name": "Reorder Gallery Images",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"images\": [\n        {\"id\": \"id1\", \"display_order\": 1},\n        {\"id\": \"id2\", \"display_order\": 2}\n    ]\n}"},
+            "url": {"raw": "{{base_url}}/api/gallery/reorder", "host": ["{{base_url}}"], "path": ["api", "gallery", "reorder"]},
+            "description": "Reorder semua gallery images"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ℹ️ About Info",
+      "item": [
+        {
+          "name": "Get About Info (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/about", "host": ["{{base_url}}"], "path": ["api", "public", "about"]},
+            "description": "Dapatkan informasi tentang Mealjun (public)"
+          }
+        },
+        {
+          "name": "Update About Info (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"company_name\": \"Mealjun Indonesia\",\n    \"tagline\": \"Makanan Sehat dari Bahan Pilihan\",\n    \"description\": \"Mealjun adalah perusahaan yang memproduksi makanan sehat berkualitas tinggi.\",\n    \"address\": \"Jl. Merdeka No. 123, Jakarta\",\n    \"phone_number\": \"+62-21-1234567\",\n    \"email\": \"info@mealjun.com\",\n    \"whatsapp_number\": \"+6287700000001\",\n    \"instagram_url\": \"https://instagram.com/mealjun\",\n    \"tiktok_url\": \"https://tiktok.com/@mealjun\",\n    \"youtube_url\": \"https://youtube.com/@mealjun\"\n}"},
+            "url": {"raw": "{{base_url}}/api/about", "host": ["{{base_url}}"], "path": ["api", "about"]},
+            "description": "Update informasi tentang Mealjun (admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📍 Store Locations - Public",
+      "item": [
+        {
+          "name": "List Store Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{base_url}}/api/public/store-locations?page=1", "host": ["{{base_url}}"], "path": ["api", "public", "store-locations"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua lokasi toko yang aktif (public)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📍 Store Locations - Admin",
+      "item": [
+        {
+          "name": "List Store Locations (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/store-locations?page=1", "host": ["{{base_url}}"], "path": ["api", "store-locations"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua lokasi toko (admin only)"
+          }
+        },
+        {
+          "name": "Get Store Location Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/store-locations/store-id-uuid", "host": ["{{base_url}}"], "path": ["api", "store-locations", "store-id-uuid"]},
+            "description": "Dapatkan detail lokasi toko"
+          }
+        },
+        {
+          "name": "Create Store Location",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"store_name\": \"Mealjun Jakarta Pusat\",\n    \"address\": \"Jl. Merdeka No. 123, Jakarta Pusat\",\n    \"city\": \"Jakarta\",\n    \"province\": \"DKI Jakarta\",\n    \"phone_number\": \"+62-21-1234567\",\n    \"latitude\": -6.2088,\n    \"longitude\": 106.8456,\n    \"opening_hours\": \"08:00 - 22:00\",\n    \"is_active\": true\n}"},
+            "url": {"raw": "{{base_url}}/api/store-locations", "host": ["{{base_url}}"], "path": ["api", "store-locations"]},
+            "description": "Buat lokasi toko baru"
+          }
+        },
+        {
+          "name": "Update Store Location",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"store_name\": \"Mealjun Jakarta Pusat Updated\",\n    \"phone_number\": \"+62-21-1234568\",\n    \"opening_hours\": \"08:00 - 23:00\"\n}"},
+            "url": {"raw": "{{base_url}}/api/store-locations/store-id-uuid", "host": ["{{base_url}}"], "path": ["api", "store-locations", "store-id-uuid"]},
+            "description": "Update lokasi toko"
+          }
+        },
+        {
+          "name": "Delete Store Location",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/store-locations/store-id-uuid", "host": ["{{base_url}}"], "path": ["api", "store-locations", "store-id-uuid"]},
+            "description": "Hapus lokasi toko"
+          }
+        }
+      ]
+    },
+    {
+      "name": "💬 Contact Messages",
+      "item": [
+        {
+          "name": "Submit Contact Message (Public)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"message\": \"Saya ingin menanyakan tentang pengiriman ke Surabaya\"\n}"},
+            "url": {"raw": "{{base_url}}/api/public/contact", "host": ["{{base_url}}"], "path": ["api", "public", "contact"]},
+            "description": "Kirim pesan kontak dari website (public, rate limit 3/menit, with WhatsApp notification)"
+          }
+        },
+        {
+          "name": "List Contact Messages (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/contact-messages?page=1", "host": ["{{base_url}}"], "path": ["api", "contact-messages"], "query": [{"key": "page", "value": "1"}, {"key": "is_read", "value": "", "disabled": true}]},
+            "description": "List semua pesan kontak (admin only)"
+          }
+        },
+        {
+          "name": "Get Contact Message Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/contact-messages/message-id-uuid", "host": ["{{base_url}}"], "path": ["api", "contact-messages", "message-id-uuid"]},
+            "description": "Dapatkan detail pesan kontak (auto mark as read)"
+          }
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/contact-messages/message-id-uuid/read", "host": ["{{base_url}}"], "path": ["api", "contact-messages", "message-id-uuid", "read"]},
+            "description": "Tandai pesan sebagai sudah dibaca"
+          }
+        },
+        {
+          "name": "Reply Contact Message",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"reply_message\": \"Terima kasih atas pertanyaan Anda. Kami melayani pengiriman ke seluruh Indonesia.\",\n    \"send_whatsapp_notif\": true,\n    \"recipient_phone\": \"+6287700000001\"\n}"},
+            "url": {"raw": "{{base_url}}/api/contact-messages/message-id-uuid/reply", "host": ["{{base_url}}"], "path": ["api", "contact-messages", "message-id-uuid", "reply"]},
+            "description": "Balas pesan kontak (dengan optional WhatsApp notification)"
+          }
+        },
+        {
+          "name": "Delete Contact Message",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/contact-messages/message-id-uuid", "host": ["{{base_url}}"], "path": ["api", "contact-messages", "message-id-uuid"]},
+            "description": "Hapus pesan kontak"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Analytics",
+      "item": [
+        {
+          "name": "Track Visitor Analytics (Public)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"page_name\": \"Product Listing\",\n    \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\",\n    \"referrer\": \"https://google.com\",\n    \"latitude\": -6.2088,\n    \"longitude\": 106.8456\n}"},
+            "url": {"raw": "{{base_url}}/api/public/analytics/track", "host": ["{{base_url}}"], "path": ["api", "public", "analytics", "track"]},
+            "description": "Track visitor analytics (public, rate limit 30/menit)"
+          }
+        },
+        {
+          "name": "List Visitor Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/analytics?page=1", "host": ["{{base_url}}"], "path": ["api", "analytics"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua analytics visitor (admin only)"
+          }
+        },
+        {
+          "name": "List City Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/analytics/city-stats?page=1", "host": ["{{base_url}}"], "path": ["api", "analytics", "city-stats"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List analytics berdasarkan kota (admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Summary (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/dashboard", "host": ["{{base_url}}"], "path": ["api", "dashboard"]},
+            "description": "Dapatkan ringkasan dashboard dengan statistik lengkap (admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "✍️ Caption Templates",
+      "item": [
+        {
+          "name": "List Caption Templates (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/caption-templates?page=1", "host": ["{{base_url}}"], "path": ["api", "caption-templates"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua caption templates (admin only)"
+          }
+        },
+        {
+          "name": "Get Caption Template Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/caption-templates/template-id-uuid", "host": ["{{base_url}}"], "path": ["api", "caption-templates", "template-id-uuid"]},
+            "description": "Dapatkan detail caption template"
+          }
+        },
+        {
+          "name": "Create Caption Template",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"tone\": \"friendly\",\n    \"template_text\": \"😍 Hei teman-teman! Kenalin nih {name} kami dengan rasa {flavor}. Harga spesial Rp{price} saja! {description}. Jangan lewatkan! 🔥\",\n    \"is_active\": true\n}"},
+            "url": {"raw": "{{base_url}}/api/caption-templates", "host": ["{{base_url}}"], "path": ["api", "caption-templates"]},
+            "description": "Buat caption template (tone: friendly, professional, playful)"
+          }
+        },
+        {
+          "name": "Update Caption Template",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"tone\": \"friendly\",\n    \"template_text\": \"Updated caption template...\",\n    \"is_active\": true\n}"},
+            "url": {"raw": "{{base_url}}/api/caption-templates/template-id-uuid", "host": ["{{base_url}}"], "path": ["api", "caption-templates", "template-id-uuid"]},
+            "description": "Update caption template"
+          }
+        },
+        {
+          "name": "Delete Caption Template",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/caption-templates/template-id-uuid", "host": ["{{base_url}}"], "path": ["api", "caption-templates", "template-id-uuid"]},
+            "description": "Hapus caption template"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🤖 Generated Captions",
+      "item": [
+        {
+          "name": "List Generated Captions (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/generated-captions?page=1", "host": ["{{base_url}}"], "path": ["api", "generated-captions"], "query": [{"key": "page", "value": "1"}]},
+            "description": "List semua generated captions dengan product relationships (admin only)"
+          }
+        },
+        {
+          "name": "Generate Caption",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n    \"product_id\": \"product-uuid\",\n    \"tone\": \"friendly\",\n    \"include_emoji\": true\n}"},
+            "url": {"raw": "{{base_url}}/api/generated-captions", "host": ["{{base_url}}"], "path": ["api", "generated-captions"]},
+            "description": "Generate caption untuk produk (placeholder: {name}, {flavor}, {price}, {description})"
+          }
+        },
+        {
+          "name": "Mark Caption as Copied",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/generated-captions/caption-id-uuid/copied", "host": ["{{base_url}}"], "path": ["api", "generated-captions", "caption-id-uuid", "copied"]},
+            "description": "Tandai caption sudah di-copy (untuk analytics)"
+          }
+        },
+        {
+          "name": "Delete Generated Caption",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}", "type": "text"}],
+            "url": {"raw": "{{base_url}}/api/generated-captions/caption-id-uuid", "host": ["{{base_url}}"], "path": ["api", "generated-captions", "caption-id-uuid"]},
+            "description": "Hapus generated caption"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://127.0.0.1:8001", "type": "string"},
+    {"key": "access_token", "value": "", "type": "string"}
+  ]
+}

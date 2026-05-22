@@ -1,0 +1,9 @@
+{
+  "model": "moonshotai/kimi-k2.5",
+  "messages": [{"role":"user","content":"Bagaimana Cara AI Berfikir secara singkat dan jangan lebih dari 100 kata?"}],
+  "max_tokens": 16384,
+  "temperature": 1.00,
+  "top_p": 1.00,
+  "stream": false,
+  "chat_template_kwargs": {"thinking":true}
+}

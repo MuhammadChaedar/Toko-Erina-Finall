@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build output
+build/
+dist/
+
+# Laravel runtime files
+storage/logs/*.log
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*.php
+
+# Local uploads generated during development
+public/uploads/
+*/public/uploads/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
